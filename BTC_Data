@@ -1,0 +1,23 @@
+import numpy as np
+import pandas as pd
+from binance.client import Client
+import math
+import datetime
+
+api_key = '你的api key'
+client = Client(api_key)
+klines = client.get_historical_klines('BTCUSDT', Client.KLINE_INTERVAL_1DAY, '1 Jun, 2009')
+whole_df = pd.DataFrame(klines)
+whole_df.columns = ['Open_time','open','high','low','close','volume','Close_time', 'Quote asset volume', 'number of trades', 'Taker buy base asset volume', 'Taker buy quote asset volume', 'Ignore']
+whole_df = whole_df.drop_duplicates(subset=['Open_time'], keep=False)
+whole_df = whole_df.apply(pd.to_numeric, errors='ignore')
+
+columns_to_keep = ['Close_time', 'open', 'high', 'low', 'close', 'volume']
+whole_df = whole_df[columns_to_keep]
+
+whole_df['Close_time'] = pd.to_datetime(whole_df['Close_time'], unit='ms')
+
+
+
+whole_df.to_csv('C:\\輔大\\專題\\歷史資料\\BTCUSDT_daydata.csv', encoding='utf-8')
+print('success')
